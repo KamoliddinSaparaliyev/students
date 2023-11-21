@@ -5,14 +5,14 @@ const {
   patchStudent,
   postStudent,
   deleteStudent,
+  uploadStudentAvatar,
 } = require("./_controllers");
+const { upload } = require("../../shared/multer");
 
 const router = express.Router();
 
-router.get("/students", getstudents);
-router.get("/students/:id", getStudent);
-router.patch("/students/:id", patchStudent);
-router.post("/students", postStudent);
-router.delete("/students:id", deleteStudent);
+router.route("/").get(getstudents).post(postStudent);
+router.route("/:id").get(getStudent).patch(patchStudent).delete(deleteStudent);
+router.post("/upload", upload.single("avatar"), uploadStudentAvatar);
 
 module.exports = router;

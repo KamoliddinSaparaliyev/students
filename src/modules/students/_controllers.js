@@ -1,27 +1,22 @@
-const express = require("express");
 const httpValidator = require("../../shared/validator");
-const { liststudents, listStudents } = require("./list-students");
+const { listStudents } = require("./list-students");
 const { showStudent } = require("./show-student");
 const { editStudent } = require("./edit-student");
 const { removeStudent } = require("./remove-student");
 const { addStudent } = require("./add-student");
+const { uploadAvatar } = require("./avatar-upload");
 const {
   studentFilterSchema,
-  showstudentschema,
-  updatestudentschema,
-  removestudentschema,
-  createstudentschema,
-  loginSchema,
+  uploadAvatarSchema,
+  showStudentSchema,
+  updateStudentSchema,
+  removeStudentSchema,
+  createStudentSchema,
 } = require("./_schemas");
 
-/**
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {express.NextFunction} next
- */
 const getstudents = async (req, res, next) => {
   try {
-    // httpValidator({ query: req.query }, studentFilterSchema);
+    httpValidator({ query: req.query }, studentFilterSchema);
 
     const result = await listStudents();
 
@@ -31,69 +26,61 @@ const getstudents = async (req, res, next) => {
   }
 };
 
-/**
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {express.NextFunction} next
- */
 const getStudent = async (req, res, next) => {
   try {
-    httpValidator({ params: req.params }, showstudentschema);
+    httpValidator({ params: req.params }, showStudentSchema);
 
     const result = await showStudent({ id: req.params.id });
 
-    return res.status(200).json({ data: result });
+    return res.status(200).json(result);
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {express.NextFunction} next
- */
 const patchStudent = async (req, res, next) => {
   try {
-    httpValidator({ params: req.params, body: req.body }, updatestudentschema);
+    httpValidator({ params: req.params, body: req.body }, updateStudentSchema);
 
     const result = await editStudent(req.query);
 
-    return res.status(201).json({ data: result });
+    return res.status(200).json(result);
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {express.NextFunction} next
- */
 const deleteStudent = async (req, res, next) => {
   try {
-    httpValidator({ params: req.params }, removestudentschema);
+    httpValidator({ params: req.params }, removeStudentSchema);
 
     const result = await removeStudent(req.query);
 
-    return res.status(201).json({ data: result });
+    return res.status(200).json(result);
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {express.NextFunction} next
- */
 const postStudent = async (req, res, next) => {
   try {
-    httpValidator({ body: req.body }, createstudentschema);
+    httpValidator({ body: req.body }, createStudentSchema);
 
     const result = await addStudent(req.query);
 
-    return res.status(201).json({ data: result });
+    return res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const uploadStudentAvatar = async (req, res, next) => {
+  try {
+    httpValidator({ param: req.params, file: req.file }, uploadAvatarSchema);
+
+    const result = await uploadAvatar(req.params.id, req.file);
+
+    return res.status(201).json(result);
   } catch (error) {
     next(error);
   }
@@ -105,4 +92,5 @@ module.exports = {
   patchStudent,
   postStudent,
   deleteStudent,
+  uploadStudentAvatar,
 };

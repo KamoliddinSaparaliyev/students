@@ -1,11 +1,10 @@
 const db = require("../../db/index");
 const bcryptjs = require("bcryptjs");
 const { NotFoundError } = require("../../shared/error");
+const { showStudent } = require("./show-student");
 
 module.exports.editStudent = async ({ id, ...changes }) => {
-  const student = await db("students").where({ id, is_deleted: false }).first();
-
-  if (!student) throw new NotFoundError("Student not found");
+  await showStudent({ id });
 
   let hashPassword = {};
   if (changes.password)

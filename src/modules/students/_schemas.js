@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const { idValid } = require("../../shared/schemas/index");
 
 // JOI schema for the StudentFilter
 const studentFilterSchema = Joi.object({
@@ -12,48 +13,56 @@ const studentFilterSchema = Joi.object({
   }),
 });
 
-const removestudentschema = Joi.object({
-  params: Joi.object({ id: Joi.number().integer().required() }),
+//RemoveStudent
+const removeStudentSchema = Joi.object({
+  ...idValid,
 });
 
-const showstudentschema = Joi.object({
-  params: Joi.object({ id: Joi.number().integer().required() }),
+//ShowStudent
+const showStudentSchema = Joi.object({
+  ...idValid,
+});
+
+//UploadAvatar
+const uploadAvatarSchema = Joi.object({
+  ...idValid,
+  file: Joi.object({
+    filename: Joi.string().required(),
+    path: Joi.string().required(),
+    mime_type: Joi.string().required(),
+    size: Joi.number().integer().positive().required(),
+  }),
 });
 
 // JOI schema for the CreateStudent
-const createstudentschema = Joi.object({
+const createStudentSchema = Joi.object({
   body: Joi.object({
-    first_name: Joi.string().required(),
-    last_name: Joi.string().required(),
-    studentname: Joi.string().required(),
-    password: Joi.string().required(),
+    full_name: Joi.string().required(),
+    age: Joi.number().integer().min(0).required(),
+    address_id: Joi.number().integer().positive().required(),
+    univer_id: Joi.number().integer().positive().required(),
+    created_at: Joi.date().iso(),
+    updated_at: Joi.date().iso(),
   }),
 });
 
 // JOI schema for the UpdateStudent
-const updatestudentschema = Joi.object({
-  params: Joi.object({ id: Joi.number().integer().required() }),
+const updateStudentSchema = Joi.object({
+  ...idValid,
   body: Joi.object({
-    first_name: Joi.string().optional(),
-    last_name: Joi.string().optional(),
-    studentname: Joi.string().optional(),
-    password: Joi.string().optional(),
-  }),
+    full_name: Joi.string(),
+    age: Joi.number().integer().min(0),
+    address_id: Joi.number().integer().positive(),
+    univer_id: Joi.number().integer().positive(),
+    updated_at: Joi.date().iso(),
+  }).min(1),
 });
-
-// JOI schema for the Login
-const loginSchema = {
-  body: Joi.object({
-    studentname: Joi.string().required(),
-    password: Joi.string().required(),
-  }),
-};
 
 module.exports = {
   studentFilterSchema,
-  createstudentschema,
-  updatestudentschema,
-  removestudentschema,
-  showstudentschema,
-  loginSchema,
+  createStudentSchema,
+  updateStudentSchema,
+  removeStudentSchema,
+  showStudentSchema,
+  uploadAvatarSchema,
 };
