@@ -1,4 +1,3 @@
-// Update with your config settings.
 const config = require("./src/shared/config");
 
 /**
@@ -21,3 +20,6 @@ module.exports = {
     },
   },
 };
+
+const { attachPaginate } = require("knex-paginate");
+attachPaginate();

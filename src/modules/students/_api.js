@@ -1,6 +1,7 @@
 const express = require("express");
+const path = require("path");
 const {
-  getstudents,
+  getStudents,
   getStudent,
   patchStudent,
   postStudent,
@@ -8,11 +9,16 @@ const {
   uploadStudentAvatar,
 } = require("./_controllers");
 const { upload } = require("../../shared/multer");
-
+const { paginateMiddleware } = require("../../middleware/pagination");
 const router = express.Router();
 
-router.route("/").get(getstudents).post(postStudent);
+router.use("/", paginateMiddleware("students"));
+router.route("/").get(getStudents).post(postStudent);
 router.route("/:id").get(getStudent).patch(patchStudent).delete(deleteStudent);
-router.post("/upload", upload.single("avatar"), uploadStudentAvatar);
+router.post("/:id/fileUpload", upload.single("image"), uploadStudentAvatar);
+router.use(
+  "/images",
+  express.static(path.join(__dirname, "..", "..", "..", "public", "uploads"))
+);
 
 module.exports = router;

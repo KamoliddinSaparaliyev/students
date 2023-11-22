@@ -9,7 +9,6 @@ const studentFilterSchema = Joi.object({
     offset: Joi.number().integer().min(0).optional(),
     sort_by: Joi.string().optional(),
     sort_order: Joi.string().valid("asc", "desc").optional(),
-    is_deleted: Joi.boolean().optional(),
   }),
 });
 
@@ -24,15 +23,9 @@ const showStudentSchema = Joi.object({
 });
 
 //UploadAvatar
-const uploadAvatarSchema = Joi.object({
+const uploadAvatarSchema = {
   ...idValid,
-  file: Joi.object({
-    filename: Joi.string().required(),
-    path: Joi.string().required(),
-    mime_type: Joi.string().required(),
-    size: Joi.number().integer().positive().required(),
-  }),
-});
+};
 
 // JOI schema for the CreateStudent
 const createStudentSchema = Joi.object({

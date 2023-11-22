@@ -3,15 +3,13 @@ exports.up = function (knex) {
     table.increments("id").primary();
     table.string("filename").notNullable();
     table.string("path").notNullable();
-    table.string("mimetype").notNullable();
-    table.integer("size").unsigned().notNullable();
     table
       .integer("student_id")
       .unsigned()
       .notNullable()
       .references("id")
       .inTable("students");
-    table.timestamps(false, false);
+    table.timestamps(true, true);
   });
 };
 

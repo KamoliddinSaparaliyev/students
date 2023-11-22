@@ -6,19 +6,17 @@ const { removeStudent } = require("./remove-student");
 const { addStudent } = require("./add-student");
 const { uploadAvatar } = require("./avatar-upload");
 const {
-  studentFilterSchema,
   uploadAvatarSchema,
   showStudentSchema,
   updateStudentSchema,
   removeStudentSchema,
   createStudentSchema,
 } = require("./_schemas");
+const { BadRequestError } = require("../../shared/error");
 
-const getstudents = async (req, res, next) => {
+const getStudents = async (req, res, next) => {
   try {
-    httpValidator({ query: req.query }, studentFilterSchema);
-
-    const result = await listStudents();
+    const result = res.paginatedData ? res.paginatedData : await listStudents();
 
     return res.status(200).json(result);
   } catch (error) {
@@ -76,11 +74,14 @@ const postStudent = async (req, res, next) => {
 
 const uploadStudentAvatar = async (req, res, next) => {
   try {
-    httpValidator({ param: req.params, file: req.file }, uploadAvatarSchema);
+    if (!req.file)
+      throw new BadRequestError("No file uploaded or upload error");
 
-    const result = await uploadAvatar(req.params.id, req.file);
+    httpValidator({ param: req.params }, uploadAvatarSchema);
 
-    return res.status(201).json(result);
+    await uploadAvatar(req.params.id, req.file);
+
+    return res.status(201).json({ success: true });
   } catch (error) {
     next(error);
   }
@@ -88,7 +89,7 @@ const uploadStudentAvatar = async (req, res, next) => {
 
 module.exports = {
   getStudent,
-  getstudents,
+  getStudents,
   patchStudent,
   postStudent,
   deleteStudent,

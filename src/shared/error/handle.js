@@ -14,7 +14,7 @@ const {
  */
 const errorMiddlewareFunc = (err, req, res, next) => {
   let status = 500;
-  let errorMessage = "Interval server error";
+  let errorMessage = err;
 
   if (err instanceof BadRequestError)
     (status = 400), (err.message = errorMessage);

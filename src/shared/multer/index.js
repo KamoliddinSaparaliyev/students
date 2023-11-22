@@ -1,37 +1,39 @@
-const multer = require("multer");
-const { v4: uuidv4 } = require("uuid");
 const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
 
-const fileFilter = (req, file, cb) => {
-  const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(
-      new Error(
-        "Invalid file format. Only images (jpeg, png, gif) are allowed."
-      )
-    );
-  }
-};
+const uploadDir = path.join(__dirname, "..", "..", "..", "public", "uploads");
 
-const generateUniqueFileName = (file) => {
-  const fileExtension = file.mimetype.split("/")[1];
-  return `avatar-${uuidv4()}.${fileExtension}`;
-};
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "uploads", "students"));
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    cb(null, "Users-avatar/" + generateUniqueFileName(file));
+    cb(null, Date.now() + file.originalname);
   },
 });
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/png"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 const upload = multer({
   storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
   fileFilter: fileFilter,
 });
-
-module.exports = upload;
+module.exports = { upload, uploadDir };
