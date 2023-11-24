@@ -13,11 +13,11 @@ const isLoggedIn = (req, res, next) => {
   try {
     const { authorization: token } = req.headers;
 
-    if (!token) throw new UnauthorizedError("Login qilmagansiz");
+    if (!token) throw new UnauthorizedError("Tizimga kiring!");
 
     const decoded = jwt.verify(token, config.jwt.secret);
 
-    req.user = { id: decoded.id };
+    req.user = { id: decoded.id, role: decoded.role };
 
     next();
   } catch (error) {

@@ -1,24 +1,23 @@
 const express = require("express");
-const path = require("path");
 const {
-  getStudents,
-  getStudent,
-  patchStudent,
-  postStudent,
-  deleteStudent,
-  uploadStudentAvatar,
+  getUsers,
+  getUser,
+  patchUser,
+  postUser,
+  deleteUser,
+  loginUser,
 } = require("./_controllers");
-const { upload } = require("../../shared/multer");
-const { paginateMiddleware } = require("../../middleware/pagination");
+
+const isLoggedIn = require("../../shared/auth/is-logged-in");
+const isAdmin = require("../../shared/auth/is-Admin");
+
 const router = express.Router();
 
-router.use("/", paginateMiddleware("students"));
-router.route("/").get(getStudents).post(postStudent);
-router.route("/:id").get(getStudent).patch(patchStudent).delete(deleteStudent);
-router.post("/:id/fileUpload", upload.single("image"), uploadStudentAvatar);
-router.use(
-  "/images",
-  express.static(path.join(__dirname, "..", "..", "..", "public", "uploads"))
-);
+router.get("/", isLoggedIn, isAdmin, getUsers);
+router.post("/", isLoggedIn, isAdmin, postUser);
+router.get("/:id", isLoggedIn, isAdmin, getUser);
+router.patch("/:id", isLoggedIn, isAdmin, patchUser);
+router.delete("/:id", isLoggedIn, isAdmin, deleteUser);
+router.post("/login", loginUser);
 
 module.exports = router;

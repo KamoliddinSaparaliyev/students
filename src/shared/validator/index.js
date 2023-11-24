@@ -2,11 +2,11 @@ const Joi = require("joi");
 const { BadRequestError } = require("../error");
 
 /**
- * @param {{ body, params, query, file }} param0
- * @param {{ body: Joi.Schema, params: Joi.Schema, query: Joi.Schema, file: Joi.schema}} schema
+ * @param {{ body, params, query }} param0
+ * @param {{ body: Joi.Schema, params: Joi.Schema, query: Joi.Schema}} schema
  * @returns
  */
-const httpValidator = async ({ body, params, query, file }, schema) => {
+const httpValidator = async ({ body, params, query }, schema) => {
   if (body) {
     const { error } = schema.body.validate(body);
 
@@ -19,11 +19,6 @@ const httpValidator = async ({ body, params, query, file }, schema) => {
   }
   if (query) {
     const { error } = schema.query.validate(query);
-
-    if (error) throw new BadRequestError(error);
-  }
-  if (file) {
-    const { error } = schema.file.validate(file);
 
     if (error) throw new BadRequestError(error);
   }

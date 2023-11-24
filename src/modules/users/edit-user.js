@@ -1,17 +1,16 @@
 const db = require("../../db/index");
 const bcryptjs = require("bcryptjs");
-const { NotFoundError } = require("../../shared/error");
-const { showStudent } = require("./show-student");
+const { showUser } = require("./show-user");
 
-module.exports.editStudent = async ({ id, ...changes }) => {
-  await showStudent({ id });
+module.exports.editUser = async ({ id, ...changes }) => {
+  await showUser({ id });
 
   let hashPassword = {};
   if (changes.password)
     hashPassword.password = await bcryptjs.hash(changes.password, 10);
 
   return (
-    await db("students")
+    await db("users")
       .where({ id })
       .update({ ...changes, ...hashPassword })
       .returning("*")

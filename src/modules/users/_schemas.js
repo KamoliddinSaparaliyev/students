@@ -1,8 +1,8 @@
 const Joi = require("joi");
 const { idValid } = require("../../shared/schemas/index");
 
-// JOI schema for the StudentFilter
-const studentFilterSchema = Joi.object({
+// JOI schema for the UserFilter
+const userFilterSchema = {
   query: Joi.object({
     q: Joi.string().optional(),
     limit: Joi.number().integer().min(1).optional(),
@@ -10,25 +10,25 @@ const studentFilterSchema = Joi.object({
     sort_by: Joi.string().optional(),
     sort_order: Joi.string().valid("asc", "desc").optional(),
   }),
-});
+};
 
-//RemoveStudent
-const removeStudentSchema = Joi.object({
+//RemoveUser
+const removeUserSchema = Joi.object({
   ...idValid,
 });
 
-//ShowStudent
-const showStudentSchema = Joi.object({
+//ShowUser
+const showUserSchema = {
   ...idValid,
-});
+};
 
 //UploadAvatar
 const uploadAvatarSchema = {
   ...idValid,
 };
 
-// JOI schema for the CreateStudent
-const createStudentSchema = Joi.object({
+// JOI schema for the CreateUser
+const createUserSchema = {
   body: Joi.object({
     full_name: Joi.string().required(),
     age: Joi.number().integer().min(0).required(),
@@ -37,10 +37,10 @@ const createStudentSchema = Joi.object({
     created_at: Joi.date().iso(),
     updated_at: Joi.date().iso(),
   }),
-});
+};
 
-// JOI schema for the UpdateStudent
-const updateStudentSchema = Joi.object({
+// JOI schema for the UpdateUser
+const updateUserSchema = {
   ...idValid,
   body: Joi.object({
     full_name: Joi.string(),
@@ -49,13 +49,21 @@ const updateStudentSchema = Joi.object({
     univer_id: Joi.number().integer().positive(),
     updated_at: Joi.date().iso(),
   }).min(1),
-});
+};
+
+// JOI schema for the login
+const loginUserSchema = {
+  body: Joi.object({
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+  }),
+};
 
 module.exports = {
-  studentFilterSchema,
-  createStudentSchema,
-  updateStudentSchema,
-  removeStudentSchema,
-  showStudentSchema,
-  uploadAvatarSchema,
+  userFilterSchema,
+  createUserSchema,
+  updateUserSchema,
+  removeUserSchema,
+  showUserSchema,
+  loginUserSchema,
 };

@@ -1,3 +1,4 @@
+const { BadRequestError } = require("../../shared/error");
 const httpValidator = require("../../shared/validator");
 const { listStudents } = require("./list-students");
 const { showStudent } = require("./show-student");
@@ -12,7 +13,6 @@ const {
   removeStudentSchema,
   createStudentSchema,
 } = require("./_schemas");
-const { BadRequestError } = require("../../shared/error");
 
 const getStudents = async (req, res, next) => {
   try {
@@ -64,7 +64,7 @@ const postStudent = async (req, res, next) => {
   try {
     httpValidator({ body: req.body }, createStudentSchema);
 
-    const result = await addStudent(req.query);
+    const result = await addStudent(req.body);
 
     return res.status(201).json(result);
   } catch (error) {

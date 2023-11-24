@@ -1,8 +1,8 @@
 const Joi = require("joi");
-const { idValid } = require("../../shared/schemas/index");
+const { idValid } = require("../../shared/schemas");
 
 // JOI schema for the StudentFilter
-const studentFilterSchema = Joi.object({
+const studentFilterSchema = {
   query: Joi.object({
     q: Joi.string().optional(),
     limit: Joi.number().integer().min(1).optional(),
@@ -10,17 +10,17 @@ const studentFilterSchema = Joi.object({
     sort_by: Joi.string().optional(),
     sort_order: Joi.string().valid("asc", "desc").optional(),
   }),
-});
+};
 
 //RemoveStudent
-const removeStudentSchema = Joi.object({
+const removeStudentSchema = {
   ...idValid,
-});
+};
 
 //ShowStudent
-const showStudentSchema = Joi.object({
+const showStudentSchema = {
   ...idValid,
-});
+};
 
 //UploadAvatar
 const uploadAvatarSchema = {
@@ -28,7 +28,7 @@ const uploadAvatarSchema = {
 };
 
 // JOI schema for the CreateStudent
-const createStudentSchema = Joi.object({
+const createStudentSchema = {
   body: Joi.object({
     full_name: Joi.string().required(),
     age: Joi.number().integer().min(0).required(),
@@ -37,10 +37,10 @@ const createStudentSchema = Joi.object({
     created_at: Joi.date().iso(),
     updated_at: Joi.date().iso(),
   }),
-});
+};
 
 // JOI schema for the UpdateStudent
-const updateStudentSchema = Joi.object({
+const updateStudentSchema = {
   ...idValid,
   body: Joi.object({
     full_name: Joi.string(),
@@ -49,7 +49,7 @@ const updateStudentSchema = Joi.object({
     univer_id: Joi.number().integer().positive(),
     updated_at: Joi.date().iso(),
   }).min(1),
-});
+};
 
 module.exports = {
   studentFilterSchema,

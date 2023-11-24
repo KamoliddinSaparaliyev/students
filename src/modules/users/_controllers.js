@@ -1,22 +1,21 @@
 const httpValidator = require("../../shared/validator");
-const { listStudents } = require("./list-students");
-const { showStudent } = require("./show-student");
-const { editStudent } = require("./edit-student");
-const { removeStudent } = require("./remove-student");
-const { addStudent } = require("./add-student");
-const { uploadAvatar } = require("./avatar-upload");
+const { showUser } = require("./show-user");
+const { listUsers } = require("./list-users");
+const { editUser } = require("./edit-user");
+const { removeUser } = require("./remove-user");
+const { addUser } = require("./add-user");
+const { login } = require("./login-user");
 const {
-  uploadAvatarSchema,
-  showStudentSchema,
-  updateStudentSchema,
-  removeStudentSchema,
-  createStudentSchema,
+  showUserSchema,
+  updateUserSchema,
+  removeUserSchema,
+  createUserSchema,
+  loginUserSchema,
 } = require("./_schemas");
-const { BadRequestError } = require("../../shared/error");
 
-const getStudents = async (req, res, next) => {
+const getUsers = async (req, res, next) => {
   try {
-    const result = res.paginatedData ? res.paginatedData : await listStudents();
+    const result = await listUsers();
 
     return res.status(200).json(result);
   } catch (error) {
@@ -24,11 +23,11 @@ const getStudents = async (req, res, next) => {
   }
 };
 
-const getStudent = async (req, res, next) => {
+const getUser = async (req, res, next) => {
   try {
-    httpValidator({ params: req.params }, showStudentSchema);
+    httpValidator({ params: req.params }, showUserSchema);
 
-    const result = await showStudent({ id: req.params.id });
+    const result = await showUser({ id: req.params.id });
 
     return res.status(200).json(result);
   } catch (error) {
@@ -36,11 +35,11 @@ const getStudent = async (req, res, next) => {
   }
 };
 
-const patchStudent = async (req, res, next) => {
+const patchUser = async (req, res, next) => {
   try {
-    httpValidator({ params: req.params, body: req.body }, updateStudentSchema);
+    httpValidator({ params: req.params, body: req.body }, updateUserSchema);
 
-    const result = await editStudent(req.query);
+    const result = await editUser(req.query);
 
     return res.status(200).json(result);
   } catch (error) {
@@ -48,11 +47,11 @@ const patchStudent = async (req, res, next) => {
   }
 };
 
-const deleteStudent = async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
   try {
-    httpValidator({ params: req.params }, removeStudentSchema);
+    httpValidator({ params: req.params }, removeUserSchema);
 
-    const result = await removeStudent(req.query);
+    const result = await removeUser(req.query);
 
     return res.status(200).json(result);
   } catch (error) {
@@ -60,11 +59,11 @@ const deleteStudent = async (req, res, next) => {
   }
 };
 
-const postStudent = async (req, res, next) => {
+const postUser = async (req, res, next) => {
   try {
-    httpValidator({ body: req.body }, createStudentSchema);
+    httpValidator({ body: req.body }, createUserSchema);
 
-    const result = await addStudent(req.query);
+    const result = await addUser(req.query);
 
     return res.status(201).json(result);
   } catch (error) {
@@ -72,26 +71,23 @@ const postStudent = async (req, res, next) => {
   }
 };
 
-const uploadStudentAvatar = async (req, res, next) => {
+const loginUser = async (req, res, next) => {
   try {
-    if (!req.file)
-      throw new BadRequestError("No file uploaded or upload error");
+    httpValidator({ body: req.body }, loginUserSchema);
 
-    httpValidator({ param: req.params }, uploadAvatarSchema);
+    const result = await login(req.body);
 
-    await uploadAvatar(req.params.id, req.file);
-
-    return res.status(201).json({ success: true });
+    return res.status(200).json(result);
   } catch (error) {
     next(error);
   }
 };
 
 module.exports = {
-  getStudent,
-  getStudents,
-  patchStudent,
-  postStudent,
-  deleteStudent,
-  uploadStudentAvatar,
+  getUser,
+  getUsers,
+  patchUser,
+  postUser,
+  deleteUser,
+  loginUser,
 };
