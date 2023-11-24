@@ -20,6 +20,3 @@ module.exports = {
     },
   },
 };
-
-const { attachPaginate } = require("knex-paginate");
-attachPaginate();
